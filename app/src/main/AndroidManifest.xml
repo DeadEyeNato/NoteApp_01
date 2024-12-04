@@ -29,6 +29,10 @@
             android:name=".ViewNoteActivity"
             android:theme="@style/Theme.NoteApp_01" />
 
+        <activity
+            android:name=".CreateCategoryActivity"
+            android:theme="@style/Theme.NoteApp_01" />
+
     </application>
 
 </manifest>

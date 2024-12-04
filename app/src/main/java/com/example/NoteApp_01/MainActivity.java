@@ -13,40 +13,42 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private RecyclerView notesRecyclerView;
-    private NotesAdapter notesAdapter;
+    private RecyclerView categoriesRecyclerView;
+    private CategoriesAdapter categoriesAdapter;
     private AppDatabase db;
-    private List<Note> noteList;
+    private List<CategoryWithNotes> categoryWithNotesList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main); // Removed getSupportActionBar().hide();
+        setContentView(R.layout.activity_main);
 
-        // Initialize database
+        // Initialize database with fallback to destructive migration
         db = Room.databaseBuilder(getApplicationContext(),
-                AppDatabase.class, "notes_db").allowMainThreadQueries().build();
+                        AppDatabase.class, "notes_db")
+                .fallbackToDestructiveMigration()
+                .allowMainThreadQueries()
+                .build();
 
         // Initialize RecyclerView
-        notesRecyclerView = findViewById(R.id.notesRecyclerView);
-        notesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        categoriesRecyclerView = findViewById(R.id.categoriesRecyclerView);
+        categoriesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Load notes from database
-        noteList = db.noteDao().getAllNotes();
-        notesAdapter = new NotesAdapter(noteList);
-        notesRecyclerView.setAdapter(notesAdapter);
+        // Load categories and notes from database
+        categoryWithNotesList = db.categoryDao().getCategoriesWithNotes();
+        categoriesAdapter = new CategoriesAdapter(categoryWithNotesList, db);
+        categoriesRecyclerView.setAdapter(categoriesAdapter);
     }
 
-    public void goToAddNote(View view) {
-        Intent intent = new Intent(this, AddNoteActivity.class);
+    public void goToCreateCategory(View view) {
+        Intent intent = new Intent(this, CreateCategoryActivity.class);
         startActivity(intent);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        noteList.clear();
-        noteList.addAll(db.noteDao().getAllNotes());
-        notesAdapter.notifyDataSetChanged();
+        categoryWithNotesList = db.categoryDao().getCategoriesWithNotes();
+        categoriesAdapter.updateData(categoryWithNotesList);
     }
 }

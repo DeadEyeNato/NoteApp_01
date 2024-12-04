@@ -2,11 +2,15 @@ package com.example.NoteApp_01;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
+
+import java.util.List;
 
 import jp.wasabeef.richeditor.RichEditor;
 
@@ -14,24 +18,35 @@ public class ViewNoteActivity extends AppCompatActivity {
 
     private EditText titleEditText;
     private RichEditor contentRichEditor;
+    private Spinner categorySpinner;
     private AppDatabase db;
     private int noteId;
     private Note note;
+    private List<Category> categoryList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_note);
 
-        // Initialize views
         titleEditText = findViewById(R.id.titleEditText);
         contentRichEditor = findViewById(R.id.contentRichEditor);
+        categorySpinner = findViewById(R.id.categorySpinner);
 
-        // Initialize database
+        // Initialize database with fallback to destructive migration
         db = Room.databaseBuilder(getApplicationContext(),
-                AppDatabase.class, "notes_db").allowMainThreadQueries().build();
+                        AppDatabase.class, "notes_db")
+                .fallbackToDestructiveMigration()
+                .allowMainThreadQueries()
+                .build();
 
-        // Get the note ID from the intent
+        // Load categories into spinner
+        categoryList = db.categoryDao().getAllCategories();
+        ArrayAdapter<Category> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, categoryList);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        categorySpinner.setAdapter(adapter);
+
         noteId = getIntent().getIntExtra("noteId", -1);
 
         if (noteId != -1) {
@@ -39,10 +54,16 @@ public class ViewNoteActivity extends AppCompatActivity {
             if (note != null) {
                 titleEditText.setText(note.title);
                 contentRichEditor.setHtml(note.content);
+                // Set the spinner to the note's category
+                for (int i = 0; i < categoryList.size(); i++) {
+                    if (categoryList.get(i).id == note.categoryId) {
+                        categorySpinner.setSelection(i);
+                        break;
+                    }
+                }
             }
         }
 
-        // Set up RichEditor
         contentRichEditor.setEditorHeight(200);
         contentRichEditor.setEditorFontSize(16);
         contentRichEditor.setPadding(10, 10, 10, 10);
@@ -65,10 +86,12 @@ public class ViewNoteActivity extends AppCompatActivity {
     public void saveNote(View view) {
         String title = titleEditText.getText().toString().trim();
         String content = contentRichEditor.getHtml();
+        Category selectedCategory = (Category) categorySpinner.getSelectedItem();
 
-        if (note != null) {
+        if (note != null && selectedCategory != null) {
             note.title = title;
             note.content = content;
+            note.categoryId = selectedCategory.id;
             note.lastModified = System.currentTimeMillis();
             db.noteDao().update(note);
             finish();
@@ -79,7 +102,6 @@ public class ViewNoteActivity extends AppCompatActivity {
     }
 
     public void goBack(View view) {
-        // Simply finish the activity without saving changes
         finish();
     }
 }

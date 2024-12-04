@@ -5,6 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- Category Spinner -->
+    <Spinner
+        android:id="@+id/categorySpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <!-- Title EditText -->
     <EditText
         android:id="@+id/titleEditText"
         android:hint="Title"
@@ -17,10 +24,12 @@
         android:layout_height="wrap_content">
 
         <LinearLayout
+            android:id="@+id/formattingToolbar"
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
+            <!-- Bold Button -->
             <ImageButton
                 android:id="@+id/action_bold"
                 android:src="@drawable/ic_format_bold"
@@ -28,6 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
+            <!-- Italic Button -->
             <ImageButton
                 android:id="@+id/action_italic"
                 android:src="@drawable/ic_format_italic"
@@ -35,6 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
+            <!-- Underline Button -->
             <ImageButton
                 android:id="@+id/action_underline"
                 android:src="@drawable/ic_format_underline"
@@ -42,6 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
+            <!-- Bulleted List Button -->
             <ImageButton
                 android:id="@+id/action_bulleted_list"
                 android:src="@drawable/ic_format_list_bulleted"
@@ -49,7 +61,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
-            <!-- Add more buttons as needed -->
+            <!-- Add more formatting buttons as needed -->
 
         </LinearLayout>
     </HorizontalScrollView>
