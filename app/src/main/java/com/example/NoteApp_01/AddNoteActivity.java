@@ -12,12 +12,10 @@ import androidx.room.Room;
 
 import java.util.List;
 
-import jp.wasabeef.richeditor.RichEditor;
-
 public class AddNoteActivity extends AppCompatActivity {
 
     private EditText titleEditText;
-    private RichEditor contentRichEditor;
+    private CustomRichEditor contentRichEditor;
     private Spinner categorySpinner;
     private AppDatabase db;
     private List<Category> categoryList;
@@ -76,18 +74,20 @@ public class AddNoteActivity extends AppCompatActivity {
 
         // Checkbox List Button
         ImageButton checkboxListButton = findViewById(R.id.action_checkbox_list);
-        checkboxListButton.setOnClickListener(v -> insertCheckboxList());
+        checkboxListButton.setOnClickListener(v -> insertCheckbox());
     }
 
     public void saveNote(View view) {
         String title = titleEditText.getText().toString().trim();
-        String content = contentRichEditor.getHtml();
         Category selectedCategory = (Category) categorySpinner.getSelectedItem();
 
-        if (selectedCategory != null && (!title.isEmpty() || content != null)) {
-            Note note = new Note(title, content, System.currentTimeMillis(), selectedCategory.id);
-            db.noteDao().insert(note);
-            finish();
+        if (selectedCategory != null && (!title.isEmpty())) {
+            contentRichEditor.syncCheckedStateAndGetHtml(html -> {
+                String content = html;
+                Note note = new Note(title, content, System.currentTimeMillis(), selectedCategory.id);
+                db.noteDao().insert(note);
+                finish();
+            });
         } else {
             // Handle case where no category is selected or note is empty
         }
@@ -97,9 +97,9 @@ public class AddNoteActivity extends AppCompatActivity {
         finish();
     }
 
-    private void insertCheckboxList() {
-        // Insert a checkbox list item into the editor
-        String checkboxHtml = "<ul><li><input type=\"checkbox\"/> </li></ul>";
-        contentRichEditor.setHtml(checkboxHtml);
+    private void insertCheckbox() {
+        // Insert a checkbox at the cursor position without replacing existing content
+        contentRichEditor.focusEditor();
+        contentRichEditor.insertTodo();
     }
 }

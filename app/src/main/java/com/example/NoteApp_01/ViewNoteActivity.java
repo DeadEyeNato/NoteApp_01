@@ -1,30 +1,28 @@
 package com.example.NoteApp_01;
 
-import android.content.DialogInterface;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
-import android.app.AlertDialog;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
 import java.util.List;
 
-import jp.wasabeef.richeditor.RichEditor;
-
 public class ViewNoteActivity extends AppCompatActivity {
 
     private EditText titleEditText;
-    private RichEditor contentRichEditor;
+    private CustomRichEditor contentRichEditor;
     private Spinner categorySpinner;
     private AppDatabase db;
     private int noteId;
     private Note note;
     private List<Category> categoryList;
+    private boolean isContentLoaded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +33,6 @@ public class ViewNoteActivity extends AppCompatActivity {
         contentRichEditor = findViewById(R.id.contentRichEditor);
         categorySpinner = findViewById(R.id.categorySpinner);
 
-        // Initialize database with fallback to destructive migration
         db = Room.databaseBuilder(getApplicationContext(),
                         AppDatabase.class, "notes_db")
                 .fallbackToDestructiveMigration()
@@ -55,7 +52,6 @@ public class ViewNoteActivity extends AppCompatActivity {
             note = db.noteDao().getNoteById(noteId);
             if (note != null) {
                 titleEditText.setText(note.title);
-                contentRichEditor.setHtml(note.content);
                 // Set the spinner to the note's category
                 for (int i = 0; i < categoryList.size(); i++) {
                     if (categoryList.get(i).id == note.categoryId) {
@@ -86,21 +82,31 @@ public class ViewNoteActivity extends AppCompatActivity {
 
         // Checkbox List Button
         ImageButton checkboxListButton = findViewById(R.id.action_checkbox_list);
-        checkboxListButton.setOnClickListener(v -> insertCheckboxList());
+        checkboxListButton.setOnClickListener(v -> insertCheckbox());
+
+        // Set the note content after the editor has loaded
+        contentRichEditor.setOnInitialLoadListener(isReady -> {
+            if (isReady && note != null && !isContentLoaded) {
+                contentRichEditor.setHtml(note.content);
+                isContentLoaded = true;
+            }
+        });
     }
 
     public void saveNote(View view) {
         String title = titleEditText.getText().toString().trim();
-        String content = contentRichEditor.getHtml();
         Category selectedCategory = (Category) categorySpinner.getSelectedItem();
 
         if (note != null && selectedCategory != null) {
-            note.title = title;
-            note.content = content;
-            note.categoryId = selectedCategory.id;
-            note.lastModified = System.currentTimeMillis();
-            db.noteDao().update(note);
-            finish();
+            contentRichEditor.syncCheckedStateAndGetHtml(html -> {
+                String content = html;
+                note.title = title;
+                note.content = content;
+                note.categoryId = selectedCategory.id;
+                note.lastModified = System.currentTimeMillis();
+                db.noteDao().update(note);
+                finish();
+            });
         } else {
             // Handle error case
             finish();
@@ -127,9 +133,9 @@ public class ViewNoteActivity extends AppCompatActivity {
                 .show();
     }
 
-    private void insertCheckboxList() {
-        // Insert a checkbox list item into the editor
-        String checkboxHtml = "<ul><li><input type=\"checkbox\"/> </li></ul>";
-        contentRichEditor.setHtml(checkboxHtml);
+    private void insertCheckbox() {
+        // Insert a checkbox at the cursor position without replacing existing content
+        contentRichEditor.focusEditor();
+        contentRichEditor.insertTodo();
     }
 }

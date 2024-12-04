@@ -9,14 +9,14 @@
     <Spinner
         android:id="@+id/categorySpinner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <!-- Title EditText -->
     <EditText
         android:id="@+id/titleEditText"
         android:hint="Title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <!-- Formatting Toolbar -->
     <HorizontalScrollView
@@ -35,7 +35,7 @@
                 android:src="@drawable/ic_format_bold"
                 android:contentDescription="Bold"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
             <!-- Italic Button -->
             <ImageButton
@@ -43,7 +43,7 @@
                 android:src="@drawable/ic_format_italic"
                 android:contentDescription="Italic"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
             <!-- Underline Button -->
             <ImageButton
@@ -51,7 +51,7 @@
                 android:src="@drawable/ic_format_underline"
                 android:contentDescription="Underline"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
             <!-- Bulleted List Button -->
             <ImageButton
@@ -59,7 +59,7 @@
                 android:src="@drawable/ic_format_list_bulleted"
                 android:contentDescription="Bulleted List"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
             <!-- Checkbox List Button -->
             <ImageButton
@@ -67,7 +67,7 @@
                 android:src="@drawable/ic_check_box"
                 android:contentDescription="Checkbox List"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
             <!-- Add more formatting buttons as needed -->
 
@@ -75,11 +75,11 @@
     </HorizontalScrollView>
 
     <!-- RichEditor for content -->
-    <jp.wasabeef.richeditor.RichEditor
+    <com.example.NoteApp_01.CustomRichEditor
         android:id="@+id/contentRichEditor"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
 
     <!-- Button Layout -->
     <LinearLayout
@@ -94,7 +94,7 @@
             android:onClick="goBack"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
         <!-- Save Edit Button -->
         <Button
@@ -103,7 +103,7 @@
             android:onClick="saveNote"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
         <!-- Delete Button -->
         <Button
@@ -112,7 +112,7 @@
             android:onClick="deleteNote"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
     </LinearLayout>
 
