@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="button_default_color">#2B3038</color> <!-- Grey color -->
+    <color name="button_active_color">#A57C00</color> <!-- Green color -->
+    <color name="button_activeSub_color">#A57C00</color>
+    <color name="button_active_Textcolor">#21252a</color>
+    <color name="button_default_Textcolor">#CDCFD1</color>
+    <color name="BackGroundColor">#20242A</color>
+    <color name="BackGroundColorBox">#262A31</color>
+    <color name="DefaultText">#A8A8A8</color>
+    <color name="DefaultTextSub">#6d6d6d</color>
+    <color name="DefaultHint">#6d6d6d</color>
+    <color name="prompt_background">#5F0219</color>
+    <color name="DividerColor">#4B999696</color>
+    <!-- Category colors -->
+    <color name="category_income">#45C145</color> <!-- Green -->
+    <color name="category_recurring">#C8BB3B</color> <!-- Yellow -->
+    <color name="category_necessity">#C37037</color> <!-- Orange -->
+    <color name="category_extra">#CE5244</color> <!-- Red -->
+    <color name="circle_invisible_text">#00000000</color>
+</resources>
+

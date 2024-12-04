@@ -1,0 +1,3 @@
+com.example.NoteApp_01.test
+style WhiteBackgroundDialogTheme
+style WhiteBackgroundTheme
