@@ -1,11 +1,13 @@
 package com.example.NoteApp_01;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.app.AlertDialog;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
@@ -81,6 +83,10 @@ public class ViewNoteActivity extends AppCompatActivity {
 
         ImageButton bulletListButton = findViewById(R.id.action_bulleted_list);
         bulletListButton.setOnClickListener(v -> contentRichEditor.setBullets());
+
+        // Checkbox List Button
+        ImageButton checkboxListButton = findViewById(R.id.action_checkbox_list);
+        checkboxListButton.setOnClickListener(v -> insertCheckboxList());
     }
 
     public void saveNote(View view) {
@@ -103,5 +109,27 @@ public class ViewNoteActivity extends AppCompatActivity {
 
     public void goBack(View view) {
         finish();
+    }
+
+    public void deleteNote(View view) {
+        // Show confirmation dialog
+        new AlertDialog.Builder(this)
+                .setTitle("Delete Note")
+                .setMessage("Are you sure you want to delete this note?")
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                    // Delete the note
+                    if (note != null) {
+                        db.noteDao().delete(note);
+                    }
+                    finish();
+                })
+                .setNegativeButton(android.R.string.no, null)
+                .show();
+    }
+
+    private void insertCheckboxList() {
+        // Insert a checkbox list item into the editor
+        String checkboxHtml = "<ul><li><input type=\"checkbox\"/> </li></ul>";
+        contentRichEditor.setHtml(checkboxHtml);
     }
 }

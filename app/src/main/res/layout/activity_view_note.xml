@@ -61,6 +61,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
+            <!-- Checkbox List Button -->
+            <ImageButton
+                android:id="@+id/action_checkbox_list"
+                android:src="@drawable/ic_check_box"
+                android:contentDescription="Checkbox List"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
             <!-- Add more formatting buttons as needed -->
 
         </LinearLayout>
@@ -93,6 +101,15 @@
             android:id="@+id/saveButton"
             android:text="Save Edit"
             android:onClick="saveNote"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <!-- Delete Button -->
+        <Button
+            android:id="@+id/deleteButton"
+            android:text="Delete"
+            android:onClick="deleteNote"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"/>

@@ -61,7 +61,7 @@ public class AddNoteActivity extends AppCompatActivity {
         contentRichEditor.setPadding(10, 10, 10, 10);
         contentRichEditor.setPlaceholder("Write your note here...");
 
-        // Set up formatting buttons (same as before)
+        // Set up formatting buttons
         ImageButton boldButton = findViewById(R.id.action_bold);
         boldButton.setOnClickListener(v -> contentRichEditor.setBold());
 
@@ -73,6 +73,10 @@ public class AddNoteActivity extends AppCompatActivity {
 
         ImageButton bulletListButton = findViewById(R.id.action_bulleted_list);
         bulletListButton.setOnClickListener(v -> contentRichEditor.setBullets());
+
+        // Checkbox List Button
+        ImageButton checkboxListButton = findViewById(R.id.action_checkbox_list);
+        checkboxListButton.setOnClickListener(v -> insertCheckboxList());
     }
 
     public void saveNote(View view) {
@@ -91,5 +95,11 @@ public class AddNoteActivity extends AppCompatActivity {
 
     public void goBack(View view) {
         finish();
+    }
+
+    private void insertCheckboxList() {
+        // Insert a checkbox list item into the editor
+        String checkboxHtml = "<ul><li><input type=\"checkbox\"/> </li></ul>";
+        contentRichEditor.setHtml(checkboxHtml);
     }
 }
