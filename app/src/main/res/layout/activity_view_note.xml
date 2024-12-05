@@ -74,12 +74,13 @@
         </LinearLayout>
     </HorizontalScrollView>
 
-    <!-- RichEditor for content -->
-    <com.example.NoteApp_01.CustomRichEditor
+    <!-- Replace CustomRichEditor with RichEditor in your XML layouts -->
+    <jp.wasabeef.richeditor.RichEditor
         android:id="@+id/contentRichEditor"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
+
 
     <!-- Button Layout -->
     <LinearLayout

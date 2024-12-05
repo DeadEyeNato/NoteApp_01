@@ -41,6 +41,7 @@ dependencies {
     implementation 'androidx.preference:preference:1.2.1'
     implementation 'jp.wasabeef:richeditor-android:2.0.0'
 
+
     // Add the following line for vector drawable compatibility
     implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
 

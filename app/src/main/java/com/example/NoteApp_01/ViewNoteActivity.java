@@ -13,16 +13,17 @@ import androidx.room.Room;
 
 import java.util.List;
 
+import jp.wasabeef.richeditor.RichEditor;
+
 public class ViewNoteActivity extends AppCompatActivity {
 
     private EditText titleEditText;
-    private CustomRichEditor contentRichEditor;
+    private RichEditor contentRichEditor;
     private Spinner categorySpinner;
     private AppDatabase db;
     private int noteId;
     private Note note;
     private List<Category> categoryList;
-    private boolean isContentLoaded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,11 +85,10 @@ public class ViewNoteActivity extends AppCompatActivity {
         ImageButton checkboxListButton = findViewById(R.id.action_checkbox_list);
         checkboxListButton.setOnClickListener(v -> insertCheckbox());
 
-        // Set the note content after the editor has loaded
+        // Wait for the editor to initialize before setting HTML content
         contentRichEditor.setOnInitialLoadListener(isReady -> {
-            if (isReady && note != null && !isContentLoaded) {
+            if (isReady && note != null) {
                 contentRichEditor.setHtml(note.content);
-                isContentLoaded = true;
             }
         });
     }
@@ -98,15 +98,13 @@ public class ViewNoteActivity extends AppCompatActivity {
         Category selectedCategory = (Category) categorySpinner.getSelectedItem();
 
         if (note != null && selectedCategory != null) {
-            contentRichEditor.syncCheckedStateAndGetHtml(html -> {
-                String content = html;
-                note.title = title;
-                note.content = content;
-                note.categoryId = selectedCategory.id;
-                note.lastModified = System.currentTimeMillis();
-                db.noteDao().update(note);
-                finish();
-            });
+            String content = contentRichEditor.getHtml();
+            note.title = title;
+            note.content = content;
+            note.categoryId = selectedCategory.id;
+            note.lastModified = System.currentTimeMillis();
+            db.noteDao().update(note);
+            finish();
         } else {
             // Handle error case
             finish();

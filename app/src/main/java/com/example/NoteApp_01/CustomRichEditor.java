@@ -12,6 +12,7 @@ import jp.wasabeef.richeditor.RichEditor;
 public class CustomRichEditor extends RichEditor {
 
     private boolean isEditorLoaded = false;
+    private String pendingHtmlContent = null;
 
     public CustomRichEditor(Context context) {
         super(context);
@@ -24,9 +25,12 @@ public class CustomRichEditor extends RichEditor {
     }
 
     private void init() {
-        setOnInitialLoadListener(isReady -> {
+        super.setOnInitialLoadListener(isReady -> {
             isEditorLoaded = isReady;
-            // Perform actions after the editor is ready
+            if (isEditorLoaded && pendingHtmlContent != null) {
+                super.setHtml(pendingHtmlContent);
+                pendingHtmlContent = null;
+            }
         });
     }
 
@@ -35,27 +39,12 @@ public class CustomRichEditor extends RichEditor {
         if (isEditorLoaded) {
             super.setHtml(contents);
         } else {
-            setOnInitialLoadListener(isReady -> {
-                if (isReady) {
-                    super.setHtml(contents);
-                }
-            });
+            pendingHtmlContent = contents;
         }
     }
 
-    public void syncCheckedStateAndGetHtml(ValueCallback<String> callback) {
-        String js = "(function() {" +
-                "var inputs = document.querySelectorAll('input[type=checkbox]');" +
-                "inputs.forEach(function(input) {" +
-                "if (input.checked) {" +
-                "input.setAttribute('checked', 'checked');" +
-                "} else {" +
-                "input.removeAttribute('checked');" +
-                "}" +
-                "});" +
-                "return RE.getHtml();" +
-                "})();";
-        executeJavaScript(js, callback);
+    public void getHtml(ValueCallback<String> callback) {
+        executeJavaScript("RE.getHtml();", callback);
     }
 
     private void executeJavaScript(String script, ValueCallback<String> callback) {
@@ -63,11 +52,19 @@ public class CustomRichEditor extends RichEditor {
             Field field = RichEditor.class.getDeclaredField("mWebView");
             field.setAccessible(true);
             WebView webView = (WebView) field.get(this);
-            webView.evaluateJavascript(script, callback);
+            webView.evaluateJavascript(script, value -> {
+                if (callback != null) {
+                    // Remove any surrounding quotes from the result
+                    if (value != null && value.length() >= 2 && value.startsWith("\"") && value.endsWith("\"")) {
+                        value = value.substring(1, value.length() - 1).replace("\\n", "\n").replace("\\\"", "\"");
+                    }
+                    callback.onReceiveValue(value);
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
             if (callback != null) {
-                callback.onReceiveValue(null);
+                callback.onReceiveValue("");
             }
         }
     }
